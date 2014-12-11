@@ -14,7 +14,7 @@ describe('fotolia', function() {
         limit: 2
       }
     };
-    fotolia.getSearchResults(params, function (err, results) {
+    fotolia.search.getSearchResults(params, function (err, results) {
       if (err) return done(err);
       console.log(results);
       done();
@@ -23,7 +23,7 @@ describe('fotolia', function() {
 
   it('should be able to request media data', function(done) {
     var fotolia = Fotolia(apiKey);
-    fotolia.getMediaData({ id: 20 }, function (err, results) {
+    fotolia.media.getMediaData({ id: 20 }, function (err, results) {
       if (err) return done(err);
       console.log(results);
       done();

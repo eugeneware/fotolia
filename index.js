@@ -4,20 +4,88 @@ var request = require('request'),
 var baseUrl = 'api.fotolia.com/Rest/1/';
 module.exports = Fotolia;
 
+var apis = {
+  search: [
+    'getSearchResults',
+    'getCategories1',
+    'getCategories2',
+    'getTags',
+    'getGalleries',
+    'getSeasonalGalleries',
+    'getCountries',
+  ],
+  media: [
+    'getMediaData',
+    'getBulkMediaData',
+    'getMediaGalleries',
+    'getMedia',
+    'getMediaComp',
+    'getHomePageImages',
+    'getLicense',
+  ],
+  user: [
+    'loginUser',
+    'refreshToken',
+    'userSignUp',
+    'userEditProfile',
+    'getUserData',
+    'getSalesData',
+    'getUserStats',
+    'getUserGalleries',
+    'getUserGalleryMedias',
+    'deleteUserGallery',
+    'createUserGallery',
+    'addToUserGallery',
+    'removeFromUserGallery',
+    'moveUpMediaInUserGallery',
+    'moveDownMediaInUserGallery',
+    'moveMediaToTopInUserGallery',
+    'getUserAdvancedStats',
+    'getLastOnlineContents',
+    'getUploadFolders',
+    'getUploadFolderFileIds',
+    'uploadIdCard',
+    'upload',
+    'getLastUploadedMedia',
+    /*
+    'subaccount.getIds',
+    'subaccount.create',
+    'subaccount.delete',
+    'subaccount.edit',
+    'subaccount.get',
+    'subaccount.getPurchasedContents',
+    */
+  ],
+  shoppingcart: [
+    'getList',
+    'add',
+    'update',
+    'remove',
+    'transferToLightbox',
+    'clear',
+  ],
+  main: [
+    'getData',
+    'test',
+  ]
+};
+
 function Fotolia(apiKey) {
   if (!(this instanceof Fotolia)) {
     return new Fotolia(apiKey);
   }
 
   this.apiKey = apiKey;
-}
 
-Fotolia.prototype.getSearchResults = function (params, cb) {
-  return this.exec('search/getSearchResults', params, cb);
-}
-
-Fotolia.prototype.getMediaData = function (params, cb) {
-  return this.exec('media/getMediaData', params, cb);
+  var self = this;
+  Object.keys(apis).forEach(function (group) {
+    self[group] = {};
+    var methods = apis[group];
+    methods.forEach(function (method) {
+      var methodName = group + '/' + method;
+      self[group][method] = self.exec.bind(self, methodName);
+    });
+  });
 }
 
 Fotolia.prototype.exec = function (method, params, cb) {
