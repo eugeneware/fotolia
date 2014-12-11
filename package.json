@@ -1,0 +1,36 @@
+{
+  "name": "fotolia",
+  "version": "1.0.0",
+  "description": "node.js client to the fotolia API",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/.bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eugeneware/fotolia"
+  },
+  "keywords": [
+    "fotolia",
+    "api",
+    "photo",
+    "photos",
+    "image",
+    "images",
+    "photography",
+    "stock"
+  ],
+  "author": "Eugene Ware <eugene@noblesamurai.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/eugeneware/fotolia/issues"
+  },
+  "dependencies": {
+    "qs": "^2.3.3",
+    "request": "^2.51.0"
+  },
+  "devDependencies": {
+    "expect.js": "~0.2.0",
+    "mocha": "~1.17.0"
+  }
+}
