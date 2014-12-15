@@ -5,69 +5,71 @@ var baseUrl = 'api.fotolia.com/Rest/1/';
 module.exports = Fotolia;
 
 var apis = {
-  search: [
-    'getSearchResults',
-    'getCategories1',
-    'getCategories2',
-    'getTags',
-    'getGalleries',
-    'getSeasonalGalleries',
-    'getCountries',
-  ],
-  media: [
-    'getMediaData',
-    'getBulkMediaData',
-    'getMediaGalleries',
-    'getMedia',
-    'getMediaComp',
-    'getHomePageImages',
-    'getLicense',
-  ],
-  user: [
-    'loginUser',
-    'refreshToken',
-    'userSignUp',
-    'userEditProfile',
-    'getUserData',
-    'getSalesData',
-    'getUserStats',
-    'getUserGalleries',
-    'getUserGalleryMedias',
-    'deleteUserGallery',
-    'createUserGallery',
-    'addToUserGallery',
-    'removeFromUserGallery',
-    'moveUpMediaInUserGallery',
-    'moveDownMediaInUserGallery',
-    'moveMediaToTopInUserGallery',
-    'getUserAdvancedStats',
-    'getLastOnlineContents',
-    'getUploadFolders',
-    'getUploadFolderFileIds',
-    'uploadIdCard',
-    'upload',
-    'getLastUploadedMedia',
+  search: {
+    getSearchResults: true,
+    getCategories1: true,
+    getCategories2: true,
+    getTags: true,
+    getGalleries: true,
+    getSeasonalGalleries: true,
+    getCountries: true,
+  },
+  media: {
+    getMediaData: true,
+    getBulkMediaData: true,
+    getMediaGalleries: true,
+    getMedia: true,
+    getMediaComp: true,
+    getHomePageImages: true,
+    getLicense: true,
+  },
+  user: {
+    createUser: { method: 'POST' },
+    loginUser: { method: 'POST' },
+    refreshToken: { method: 'POST' },
+    userSignUp: true,
+    userEditProfile: true,
+    getUserData: true,
+    getSalesData: true,
+    getUserStats: true,
+    getUserGalleries: true,
+    getUserGalleryMedias: true,
+    deleteUserGallery: { method: 'POST' },
+    createUserGallery: { method: 'POST' },
+    renameUserGallery: { method: 'POST' },
+    addToUserGallery: { method: 'POST' },
+    removeFromUserGallery: { method: 'POST' },
+    moveUpMediaInUserGallery: { method: 'POST' },
+    moveDownMediaInUserGallery: { method: 'POST' },
+    moveMediaToTopInUserGallery: { method: 'POST' },
+    getUserAdvancedStats: true,
+    getLastOnlineContents: true,
+    getUploadFolders: true,
+    getUploadFolderFileIds: true,
+    uploadIdCard: true,
+    upload: true,
+    getLastUploadedMedia: true,
     /*
-    'subaccount.getIds',
-    'subaccount.create',
-    'subaccount.delete',
-    'subaccount.edit',
-    'subaccount.get',
-    'subaccount.getPurchasedContents',
+    subaccount.getIds: true,
+    subaccount.create: { method: 'POST' },
+    subaccount.delete: { method: 'POST' },
+    subaccount.edit: { method: 'POST' },
+    subaccount.get: true,
+    subaccount.getPurchasedContents: true,
     */
-  ],
-  shoppingcart: [
-    'getList',
-    'add',
-    'update',
-    'remove',
-    'transferToLightbox',
-    'clear',
-  ],
-  main: [
-    'getData',
-    'test',
-  ]
+  },
+  shoppingcart: {
+    getList: true,
+    add: { method: 'POST' },
+    update: { method: 'POST' },
+    remove: { method: 'POST' },
+    transferToLightbox: { method: 'POST' },
+    clear: { method: 'POST' },
+  },
+  main: {
+    getData: true,
+    test: true,
+  }
 };
 
 function Fotolia(apiKey) {
@@ -78,21 +80,29 @@ function Fotolia(apiKey) {
   this.apiKey = apiKey;
 
   var self = this;
+  var defaultApiDetails = {
+    method: 'GET'
+  };
   Object.keys(apis).forEach(function (group) {
     self[group] = {};
     var methods = apis[group];
-    methods.forEach(function (method) {
+    Object.keys(methods).forEach(function (method) {
       var methodName = group + '/' + method;
-      self[group][method] = self.exec.bind(self, methodName);
+      var apiDetails = defaultApiDetails;
+      if (methods[method] !== true) {
+        apiDetails = methods[method];
+      }
+      self[group][method] = self.exec.bind(self, methodName, apiDetails);
     });
   });
 }
 
-Fotolia.prototype.exec = function (method, params, cb) {
-  var apiUrl = 'http://' + this.apiKey + '@' + baseUrl + method +
+Fotolia.prototype.exec = function (methodName, apiDetails, params, cb) {
+  var apiUrl = 'http://' + this.apiKey + '@' + baseUrl + methodName +
     '?' + qs.stringify(params);
-  request({ url: apiUrl, json: true }, function (err, res, body) {
-    if (err) return cb(err);
-    return cb(null, body);
+  request({ method: apiDetails.method, url: apiUrl, json: true },
+    function (err, res, body) {
+      if (err) return cb(err);
+      return cb(null, body);
   })
 };
